@@ -74,7 +74,7 @@ You can find your public IP from: https://whatismyipaddress.com
 Init terraform:
 
 ```bash
-cd terraform-vpc
+cd terraform-vpc  # cd to terraform-vpc from the root folder
 terraform init
 ```
 
