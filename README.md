@@ -131,3 +131,57 @@ exit
 ```
 
 ### This completes the assignment and fulfills all requirements
+
+### My Screenshots:
+
+**1 Make sure the AWS CLI credential:**
+
+<img width="767" alt="01" src="https://github.com/user-attachments/assets/abded92b-fa74-4804-acbe-7d441c468505" />
+
+
+**2 Generated AMI:**
+
+<img width="1171" alt="02" src="https://github.com/user-attachments/assets/64ae1c5f-662e-4a92-897c-772b850e0f1f" />
+
+
+**3 Init terreform:**
+
+<img width="740" alt="03" src="https://github.com/user-attachments/assets/c7829a83-4d4b-4dd1-8090-696eb6dd639b" />
+
+
+**4 Create 1 bastion host in the public subnet and 6 private EC2 instances**
+
+<img width="853" alt="04" src="https://github.com/user-attachments/assets/252a6890-7ae3-4c0b-bf1a-85c82ff33dc5" />
+
+
+**5 EC2 instance dashboard:**
+
+<img width="1195" alt="05" src="https://github.com/user-attachments/assets/a6b5b634-2fdb-4811-9e7a-13f931b3db16" />
+
+
+**6 SSH login to the bastion:**
+
+<img width="676" alt="06" src="https://github.com/user-attachments/assets/81809d9d-5d3b-41ca-bcb6-736593e788fb" />
+
+
+**7 Check Amazon Linux:**
+
+<img width="401" alt="07" src="https://github.com/user-attachments/assets/9637ec95-2364-4459-afa0-801277d925a7" />
+
+
+**8 Check Docker:**
+
+<img width="513" alt="08" src="https://github.com/user-attachments/assets/329f0146-58da-4065-8de3-b0d39b6b0c01" />
+
+
+**9 Check one of the private EC2 ip address:**
+
+<img width="1151" alt="09" src="https://github.com/user-attachments/assets/475d0d86-81dc-4206-8ea6-642f4fa230a6" />
+
+
+**10 Test whether can connect to this private EC2 instance:**
+
+<img width="526" alt="10" src="https://github.com/user-attachments/assets/8c18edf6-14df-4dc5-8025-34064ce0c824" />
+
+
+### Completed!!
