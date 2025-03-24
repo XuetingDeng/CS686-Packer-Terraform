@@ -62,19 +62,21 @@ Copy this AMI ID for the next step.
 
 ### 4. Deploy Infrastructure with Terraform
 
+Edit terraform.tfvars to include:
+
+```bash
+ami_id = "ami-0a443a001ef93bfa9"  # copy the ami just generated
+my_ip  = "YOUR_PUBLIC_IP/32"  # You can find your public IP from: https://whatismyipaddress.com
+```
+You can find your public IP from: https://whatismyipaddress.com
+
+
+Init terraform:
+
 ```bash
 cd terraform-vpc
 terraform init
 ```
-
-Then edit terraform.tfvars to include:
-
-```bash
-ami_id = "ami-0a443a001ef93bfa9"
-my_ip  = "YOUR_PUBLIC_IP/32"
-```
-
-You can find your public IP from: https://whatismyipaddress.com
 
 Then run:
 
