@@ -1,0 +1,50 @@
+---
+- name: Manage all EC2 instances
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Upgrade packages
+      apt:
+        upgrade: dist
+      when: ansible_os_family == "Debian"
+
+    - name: Install Docker if not present (Ubuntu)
+      apt:
+        name: docker.io
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Docker if not present (Amazon Linux)
+      yum:
+        name: docker
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Print Docker version
+      command: docker --version
+      register: docker_version
+      ignore_errors: yes
+
+    - name: Display Docker version
+      debug:
+        var: docker_version.stdout
+
+    - name: Check disk usage
+      command: df -h /
+      register: disk_usage
+
+    - name: Print disk usage
+      debug:
+        var: disk_usage.stdout
