@@ -1,7 +1,14 @@
-output "bastion_public_ip" {
-  value = aws_instance.bastion.public_ip
+# ----------------------------
+# Output all ip address
+# ----------------------------
+output "ubuntu_private_ips" {
+  value = [for i in aws_instance.ubuntu_instances : i.private_ip]
 }
 
-output "private_instance_ids" {
-  value = [for i in aws_instance.private_ec2 : i.id]
+output "amazon_private_ips" {
+  value = [for i in aws_instance.amazon_instances : i.private_ip]
+}
+
+output "controller_private_ip" {
+  value = aws_instance.ansible_controller.private_ip
 }
