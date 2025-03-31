@@ -11,6 +11,9 @@ module "vpc" {
   az                  = "us-east-1a"
 }
 
+# ----------------------------
+# Security Groups
+# ----------------------------
 
 resource "aws_security_group" "bastion_sg" {
   name        = "bastion-sg"
@@ -53,6 +56,10 @@ resource "aws_security_group" "private_sg" {
   }
 }
 
+# ----------------------------
+# Bastion Host (no change)
+# ----------------------------
+
 resource "aws_instance" "bastion" {
   ami                         = var.ami_id
   instance_type               = "t2.micro"
@@ -65,8 +72,49 @@ resource "aws_instance" "bastion" {
   }
 }
 
-resource "aws_instance" "private_ec2" {
-  count                       = 6
+# ----------------------------
+# AMI: Ubuntu 22.04 LTS
+# ----------------------------
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+# ----------------------------
+# 3 Ubuntu Instances
+# ----------------------------
+
+resource "aws_instance" "ubuntu_instances" {
+  count                       = 3
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = module.vpc.private_subnet_id
+  key_name                    = "packer-key"
+  vpc_security_group_ids      = [aws_security_group.private_sg.id]
+  associate_public_ip_address = false
+  tags = {
+    Name = "Ubuntu-${count.index + 1}"
+    OS   = "ubuntu"
+  }
+}
+
+# ----------------------------
+# 3 Amazon Linux Instances (your custom AMI)
+# ----------------------------
+
+resource "aws_instance" "amazon_instances" {
+  count                       = 3
   ami                         = var.ami_id
   instance_type               = "t2.micro"
   subnet_id                   = module.vpc.private_subnet_id
@@ -74,6 +122,24 @@ resource "aws_instance" "private_ec2" {
   vpc_security_group_ids      = [aws_security_group.private_sg.id]
   associate_public_ip_address = false
   tags = {
-    Name = "PrivateInstance-${count.index + 1}"
+    Name = "Amazon-${count.index + 1}"
+    OS   = "amazon"
+  }
+}
+
+# ----------------------------
+# Ansible Controller (Ubuntu)
+# ----------------------------
+
+resource "aws_instance" "ansible_controller" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = module.vpc.private_subnet_id
+  key_name                    = "packer-key"
+  vpc_security_group_ids      = [aws_security_group.private_sg.id]
+  associate_public_ip_address = false
+  tags = {
+    Name = "Ansible-Controller"
+    Role = "controller"
   }
 }
