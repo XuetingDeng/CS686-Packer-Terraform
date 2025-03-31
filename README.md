@@ -90,10 +90,16 @@ controller_private_ip = "10.0.2.xxx"
 
 Copy SSH key and Ansible files
 
+First, log in to EC2 instance dashboard, to check the BastionHost OS typr, if Amazon/linux, using ec2-user, if Ubuntu, use ubuntu
+
 1. Copy key and Ansible folder to Bastion Host (replace <3.81.133.133>):
 
 ```bash
 scp -i ~/.ssh/packer_rsa ~/.ssh/packer_rsa ec2-user@3.81.133.133:~
+```
+or Ubuntu OS:
+```bash
+scp -i ~/.ssh/packer_rsa ~/.ssh/packer_rsa ubuntu@3.81.133.133:~
 ```
 
 Under root folder, scp ansible folder (replace <3.81.133.133> with your actual public Bastion ip address):
@@ -101,21 +107,36 @@ Under root folder, scp ansible folder (replace <3.81.133.133> with your actual p
 ```bash
 scp -i ~/.ssh/packer_rsa -r ansible ec2-user@3.81.133.133:~
 ```
+or
+```bash
+scp -i ~/.ssh/packer_rsa -r ansible ubuntu@3.81.133.133:~
+```
 
 2. SSH into Bastion:
 
 ```bash
 ssh -i ~/.ssh/packer_rsa ec2-user@3.81.133.133
 ```
+or
 
+```bash
+ssh -i ~/.ssh/packer_rsa ubuntu@3.81.133.133
+```
 
 3. From Bastion, copy to Ansible Controller (replace the CONTROLLER_PRIVATE_IP <10.0.2.14> ):
+(Check the controller's private ip address in EC2 instance dashboard)
+
+```bash
+scp -i ~/packer_rsa ~/packer_rsa ec2-user@10.0.2.14:~
+scp -i ~/packer_rsa -r ~/ansible ec2-user@10.0.2.14:~
+```
+
+or
 
 ```bash
 scp -i ~/packer_rsa ~/packer_rsa ubuntu@10.0.2.14:~
 scp -i ~/packer_rsa -r ~/ansible ubuntu@10.0.2.14:~
 ```
-
 
 4. Run Ansible Playbook
 
