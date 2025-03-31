@@ -2,13 +2,7 @@
 
 ##  Description of the Project
 
-- Create a custom Amazon Linux 2 AMI with Docker installed using **Packer**
-- Deploy a secure AWS VPC infrastructure using **Terraform**, with:
-  - Public/private subnets
-  - Bastion Host for SSH access
-  - 6 EC2 instances using the custom AMI
-
----
+This project automates the provisioning of AWS infrastructure using Terraform, creates a custom AMI using Packer, and configures EC2 instances with Ansible.
 
 ##  Instructions on How to Run
 
@@ -84,104 +78,72 @@ Then run:
 terraform apply
 ```
 
-### Expected Outputs
+**Expected Outputs**
 
-Terraform will output:
-- Bastion Host Public IP
-- 6 Private EC2 Instance IDs
+ubuntu_private_ips = ["10.0.2.xxx", ...]
+amazon_private_ips = ["10.0.2.xxx", ...]
+controller_private_ip = "10.0.2.xxx"
 
-Example:
+<img width="456" alt="Screenshot 2025-03-30 at 22 27 16" src="https://github.com/user-attachments/assets/49de312a-9b25-4d0a-8408-3810931a2281" />
 
-```bash
-bastion_public_ip = "54.198.xxx.xxx"
-private_instance_ids = [
-  "i-xxxxxxxxxxxxxxxxx",
-  ...
-]
-```
 
-SSH Access Verification
+
+Copy SSH key and Ansible files
+
+1. Copy key and Ansible folder to Bastion Host (replace <3.81.133.133>):
 
 ```bash
-ssh -i ~/.ssh/packer_rsa ec2-user@<bastion_public_ip>
+scp -i ~/.ssh/packer_rsa ~/.ssh/packer_rsa ec2-user@3.81.133.133:~
 ```
 
-Once inside, first start docker manually:
+Under root folder, scp ansible folder (replace <3.81.133.133> with your actual public Bastion ip address):
 
 ```bash
-sudo service docker start
+scp -i ~/.ssh/packer_rsa -r ansible ec2-user@3.81.133.133:~
 ```
 
-Then, verify:
-```bash
-cat /etc/os-release     # → Amazon Linux 2
-docker --version        # → Docker installed
-docker ps               # → Should show no error
-```
-
-Then, test a private ec2 (input the ip add of that private ec2)
-```bash
-ping 10.0.2.xx          # → Ping private EC2
-```
-
-Don't forget to exit
+2. SSH into Bastion:
 
 ```bash
-exit
+ssh -i ~/.ssh/packer_rsa ec2-user@3.81.133.133
 ```
 
-### This completes the assignment and fulfills all requirements
 
-### My Screenshots:
+3. From Bastion, copy to Ansible Controller (replace the CONTROLLER_PRIVATE_IP <10.0.2.14> ):
 
-**1 Make sure the AWS CLI credential:**
-
-<img width="767" alt="01" src="https://github.com/user-attachments/assets/abded92b-fa74-4804-acbe-7d441c468505" />
-
-
-**2 Generated AMI:**
-
-<img width="1171" alt="02" src="https://github.com/user-attachments/assets/64ae1c5f-662e-4a92-897c-772b850e0f1f" />
+```bash
+scp -i ~/packer_rsa ~/packer_rsa ubuntu@10.0.2.14:~
+scp -i ~/packer_rsa -r ~/ansible ubuntu@10.0.2.14:~
+```
 
 
-**3 Init terreform:**
+4. Run Ansible Playbook
 
-<img width="740" alt="03" src="https://github.com/user-attachments/assets/c7829a83-4d4b-4dd1-8090-696eb6dd639b" />
+SSH into Controller:
+```bash
+ssh -i ~/packer_rsa ubuntu@10.0.2.14
+```
 
+Once you SSH into the controller EC2 (Ubuntu in the private subnet), run the following to install Ansible:
+```bash
+sudo apt update
+sudo apt install -y ansible
+ansible --version
+```
 
-**4 Create 1 bastion host in the public subnet and 6 private EC2 instances**
+Set permissions:
+```bash
+chmod 600 ~/packer_rsa
+```
 
-<img width="853" alt="04" src="https://github.com/user-attachments/assets/252a6890-7ae3-4c0b-bf1a-85c82ff33dc5" />
+Run the Playbook:
+```bash
+cd ~/ansible
+ansible-playbook -i inventory.ini playbook.yml
+```
 
+**Expected Outputs**
 
-**5 EC2 instance dashboard:**
-
-<img width="1195" alt="05" src="https://github.com/user-attachments/assets/a6b5b634-2fdb-4811-9e7a-13f931b3db16" />
-
-
-**6 SSH login to the bastion:**
-
-<img width="676" alt="06" src="https://github.com/user-attachments/assets/81809d9d-5d3b-41ca-bcb6-736593e788fb" />
-
-
-**7 Check Amazon Linux:**
-
-<img width="401" alt="07" src="https://github.com/user-attachments/assets/9637ec95-2364-4459-afa0-801277d925a7" />
-
-
-**8 Check Docker:**
-
-<img width="513" alt="08" src="https://github.com/user-attachments/assets/329f0146-58da-4065-8de3-b0d39b6b0c01" />
-
-
-**9 Check one of the private EC2 ip address:**
-
-<img width="1151" alt="09" src="https://github.com/user-attachments/assets/475d0d86-81dc-4206-8ea6-642f4fa230a6" />
+<img width="852" alt="Screenshot 2025-03-30 at 23 45 38" src="https://github.com/user-attachments/assets/40a8a88b-a026-4c87-b10e-d644cce90066" />
 
 
-**10 Test whether can connect to this private EC2 instance:**
-
-<img width="526" alt="10" src="https://github.com/user-attachments/assets/8c18edf6-14df-4dc5-8025-34064ce0c824" />
-
-
-### Completed!!
