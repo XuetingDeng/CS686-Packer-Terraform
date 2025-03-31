@@ -88,7 +88,10 @@ controller_private_ip = "10.0.2.xxx"
 
 
 **modify inventory.ini file**
-modify the ubuntu and amazon private ip into inventory.ini, change like this:
+
+modify the ubuntu and amazon private ip inside inventory.ini file, change like this:
+
+```bash
 [ubuntu]
 10.0.2.80
 10.0.2.22
@@ -98,6 +101,7 @@ modify the ubuntu and amazon private ip into inventory.ini, change like this:
 10.0.2.86
 10.0.2.141
 10.0.2.190
+```
 
 
 Copy SSH key and Ansible files
@@ -138,6 +142,14 @@ ssh -i ~/.ssh/packer_rsa ubuntu@3.81.133.133
 #### 3. From Bastion, copy to Ansible Controller (replace the CONTROLLER_PRIVATE_IP <10.0.2.14> ):
 (Check the controller's private ip address in EC2 instance dashboard)
 
+Set permissions:
+
+```bash
+chmod 600 ~/packer_rsa
+```
+
+Then copy:
+
 ```bash
 scp -i ~/packer_rsa ~/packer_rsa ec2-user@10.0.2.14:~
 scp -i ~/packer_rsa -r ~/ansible ec2-user@10.0.2.14:~
@@ -150,10 +162,6 @@ scp -i ~/packer_rsa ~/packer_rsa ubuntu@10.0.2.14:~
 scp -i ~/packer_rsa -r ~/ansible ubuntu@10.0.2.14:~
 ```
 
-Then, set permissions:
-```bash
-chmod 600 ~/packer_rsa
-```
 
 #### 4. Run Ansible Playbook
 
