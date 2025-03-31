@@ -1,4 +1,4 @@
-# CS686 Packer & Terraform Project
+# Homework10: Multi-OS EC2 Configuration with Ansible
 
 ##  Description of the Project
 
